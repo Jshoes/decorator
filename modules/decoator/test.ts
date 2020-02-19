@@ -20,7 +20,7 @@ function Model(target: any) {
   };
 }
 
-let fieldSetAttr = (settings: any) =>
+const fieldSetAttr = (settings: any) =>
   function(target: any, propertyKey: string) {
     // console.log(target.constructor, propertyKey, obj);
 
@@ -32,7 +32,7 @@ let fieldSetAttr = (settings: any) =>
     // console.log(Reflect.getMetadataKeys(target.constructor), target);
   };
 
-let fieldSetPk = (settings: any) =>
+const fieldSetPk = (settings: any) =>
   function(target: any, propertyKey: string) {
     Reflect.defineMetadata(
       propertyKey,
@@ -64,6 +64,9 @@ export default class BaseModels extends BaseModel {
   @fieldSetAttr({fieldName: 'parentId', get: () => {}})
   departmentId!: string;
 }
+
+export {Model, fieldSetAttr, fieldSetPk, fieldSetFk};
+
 //@ts-ignore
 // console.log(Reflect.getMetadata(''));
 
