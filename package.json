@@ -1,9 +1,9 @@
 {
-  "name": "mcf-core",
+  "name": "mcf-decorator",
   "version": "0.2.0",
-  "description": "@mcf for core",
-  "module": "cjs/mcf-core.js",
-  "main": "umd/mcf-core.js",
+  "description": "@mcf for decorator",
+  "module": "cjs/mcf-decorator.js",
+  "main": "umd/mcf-decorator.js",
   "scripts": {
     "test": "jest",
     "dev": "rollup -c --watch",

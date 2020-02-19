@@ -6,12 +6,12 @@ import typescript from 'rollup-plugin-typescript';
 import extensions from 'rollup-plugin-extensions';
 
 import pkg from './package.json';
-const name = 'core';
+const name = 'decorator';
 const input = './modules/index.ts';
 
 const globals = {
-  qs: 'qs',
   redux: 'redux',
+  'redux-orm': 'redux-orm',
   'mcf-module': 'mcf-module'
 };
 
