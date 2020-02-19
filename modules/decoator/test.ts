@@ -1,42 +1,67 @@
 //@ts-ignore
 import {ModuleModel} from 'mcf-module';
 import 'reflect-metadata';
+import pk, {fk} from 'redux-orm';
 const {attr, BaseModel} = ModuleModel;
 export const namespace = 'test';
 
-var a = {};
-
-function getreflect(number: any, aaa: any) {
+function Model(target: any) {
   //@ts-ignore
   return (aa: any) => {
-    console.log(number);
-    console.log(Reflect.getMetadataKeys(a), aa, new aa());
+    // console.log(target.constructor.prototype);
+    // console.log(Reflect.getMetadataKeys(target), aa);
+    var dataKeys = Reflect.getMetadataKeys(target);
+    dataKeys.map(it => {
+      const {method, ...settings} = Reflect.getMetadata(it, target);
+      target.fields = Object.assign({}, BaseModel.fields, {
+        [it]: method(settings)
+      });
+    });
   };
 }
 
-let fieldSet = (obj: any) =>
+let fieldSetAttr = (settings: any) =>
   function(target: any, propertyKey: string) {
-    console.log(target, propertyKey, obj);
+    // console.log(target.constructor, propertyKey, obj);
 
-    Reflect.defineMetadata(propertyKey, obj, a);
-    console.log(Reflect.getMetadataKeys(a), a);
+    Reflect.defineMetadata(
+      propertyKey,
+      {...settings, method: attr},
+      target.constructor
+    );
+    // console.log(Reflect.getMetadataKeys(target.constructor), target);
   };
 
-@getreflect(123, 456)
+let fieldSetPk = (settings: any) =>
+  function(target: any, propertyKey: string) {
+    Reflect.defineMetadata(
+      propertyKey,
+      {...settings, method: pk},
+      target.constructor
+    );
+  };
+let fieldSetFk = (settings: any) =>
+  function(target: any, propertyKey: string) {
+    Reflect.defineMetadata(
+      propertyKey,
+      {...settings, method: fk},
+      target.constructor
+    );
+  };
+
+@Model(BaseModels)
 export default class BaseModels extends BaseModel {
   static modelName = namespace;
-  //   static fields = {};
-  //   static options = {
-  //     idAttribute: 'id'
-  //   };
-  //@ts-ignore
-
+  static fields = {};
+  static options = {
+    idAttribute: 'id'
+  };
   // @pk({idAttribute: 'departmentId'})
   // @Reflect.metadata('name', 'hello')
-  @fieldSet({fieldName: 'id', to: 'aa'})
+  @fieldSetAttr({fieldName: 'id', to: 'aa'})
   id!: string;
 
-  // @fieldSet({fieldName: 'parentId', get: () => {}})
+  @fieldSetAttr({fieldName: 'parentId', get: () => {}})
   departmentId!: string;
 }
 //@ts-ignore
@@ -77,7 +102,7 @@ export default class BaseModels extends BaseModel {
 //     // // 成员返回类型
 //     // console.log(returntype); // String
 //     }
-// @getreflect
+// @Model
 // export default class User {
 //   // 使用这个装饰器就可以反射出成员详细信息
 //   @meta({aaa: 123})

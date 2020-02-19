@@ -979,6 +979,11 @@
     "@types/prop-types" "*"
     csstype "^2.2.0"
 
+"@types/redux-orm@^0.13.6":
+  version "0.13.6"
+  resolved "http://192.168.200.178:4873/@types%2fredux-orm/-/redux-orm-0.13.6.tgz#1ec201e4d20a096c988c2a63452d2c0390f9803b"
+  integrity sha512-tThEs7JSH1fao+vv6dpqR3HVCV3Z14+QU7nQuEgL8+pkWOWb4HXkGZy262K8/3lBhGqWyOGwph5/IgBx0MGOpA==
+
 "@types/semver@^6.0.1":
   version "6.2.0"
   resolved "http://192.168.200.178:4873/@types%2fsemver/-/semver-6.2.0.tgz#d688d574400d96c5b0114968705366f431831e1a"
