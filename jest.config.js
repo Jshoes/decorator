@@ -19,7 +19,7 @@ module.exports = {
     '<rootDir>/src/shared/libs/url/'
   ],
   testURL: 'http://localhost/',
-  // testRegex: '__specs__/.*\\.js?$', //要测试的文件目录及后缀
+  testRegex: '(/__spec__/.*|(\\.|/)(test|spec))\\.(js?|ts?)$',
   testPathIgnorePatterns: [
     //忽略该路径的文件测试
     '<rootDir>/node_modules/(?!lodash-es)',
@@ -34,10 +34,11 @@ module.exports = {
   ],
   transform: {
     '^.+\\.tsx?$': 'ts-jest',
+    '^.+\\.ts?$': 'ts-jest',
     '^.+\\.jsx?$': 'babel-jest'
   },
   // "snapshotSerializers": ["enzyme-to-json/serializer"],
-  moduleFileExtensions: ['', 'json', 'js', 'jsx', 'less'], //测试模块中用到的文件的后缀名配置
+  moduleFileExtensions: ['', 'json', 'js', 'jsx', 'ts', 'less'], //测试模块中用到的文件的后缀名配置
   modulePaths: ['<rootDir>/src'],
   moduleNameMapper: {
     //与测试无关的资源文件同意mock 掉，这样在import 的时候就不会真的引入这些文件
