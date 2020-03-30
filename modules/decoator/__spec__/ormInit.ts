@@ -1,9 +1,8 @@
 //@ts-ignore
 import {ModuleModel} from 'mcf-module';
-import pk, {fk} from 'redux-orm';
 import {Model, fieldSetAttr, fieldSetPk, fieldSetFk} from '../test';
 import {AnyAction} from 'redux';
-const {orm, attr, BaseModel} = ModuleModel;
+const {orm, BaseModel} = ModuleModel;
 
 @Model()
 class TestModel extends BaseModel {
@@ -48,6 +47,10 @@ class TestModel extends BaseModel {
   get getServerStatusStr() {
     //@ts-ignore
     return this._fields.serverStatus === '1' ? '启用' : '禁用';
+  }
+  getServerStatusIp() {
+    //@ts-ignore
+    return this._fields.serverStatus + this._fields.serverIp;
   }
 }
 @Model()
@@ -104,3 +107,8 @@ let session = orm.session({
 });
 
 export {session};
+describe('it', () => {
+  it('test', () => {
+    expect(true).toBe(true);
+  });
+});

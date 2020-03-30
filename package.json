@@ -5,7 +5,7 @@
   "module": "cjs/mcf-decorator.js",
   "main": "umd/mcf-decorator.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest modules/decoator/__spec__/orm.spec.ts",
     "dev": "rollup -c --watch",
     "build": "rollup -c",
     "jsdoc": "node_modules/.bin/jsdoc --configure .jsdoc.json --verbose"

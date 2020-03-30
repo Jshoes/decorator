@@ -39,7 +39,7 @@ function isAttrWithFkExist(method: any, fieldsSettings: Array<fieldSetType>) {
     method === fk
   );
 }
-
+//实现1 用存取器 get set 关键字设置get set 方法
 function fieldSetter(
   dataKeys: Array<string>,
   propertyList: Array<string>,
@@ -48,9 +48,9 @@ function fieldSetter(
   propertyList
     .filter(it => it !== 'constructor')
     .forEach(it => {
-      const descripor = Object.getOwnPropertyDescriptor(target.prototype, it);
+      const {enumerable, configurable, ...getAndSet} =
+        Object.getOwnPropertyDescriptor(target.prototype, it) || {};
       const fieldName = it.substring(3); //默认规则 设置的fieldname 的get set 函数同名并在前多get
-
       const lowerFieldName = format2Lower(fieldName);
       const fieldSetting = Reflect.getMetadata(lowerFieldName, target)
         ?.filter((item: any) => {
@@ -63,8 +63,7 @@ function fieldSetter(
         Object.assign(target.fields, BaseModel.fields, {
           [originKey]: attr({
             ...othersSetting,
-            get: descripor?.get,
-            set: descripor?.set
+            ...getAndSet
           })
         });
         Reflect.defineMetadata(
@@ -80,7 +79,54 @@ function fieldSetter(
         // console.log(target.serverName);
         //有疑问  如何在没有attr时 获取到原属性名
         Object.assign(target.fields, BaseModel.fields, {
-          [humpFieldName]: attr({get: descripor?.get, set: descripor?.set})
+          [humpFieldName]: attr({...getAndSet})
+        });
+      }
+    });
+}
+//实现2  用属性方式 设置set get 函数
+function fieldSetterField(
+  dataKeys: Array<string>,
+  propertyList: Array<string>,
+  target: any
+) {
+  propertyList
+    .filter(it => it !== 'constructor')
+    .forEach(it => {
+      const {value} =
+        Object.getOwnPropertyDescriptor(target.prototype, it) || {};
+      const fieldName = it.substring(3); //默认规则 设置的fieldname 的get set 函数同名并在前多get
+      const methodType = it.substring(0, 3); //获取方法
+      const lowerFieldName = format2Lower(fieldName);
+
+      const fieldSetting = Reflect.getMetadata(lowerFieldName, target)
+        ?.filter((item: any) => {
+          return item.method === attr;
+        })
+        .pop();
+      if (fieldSetting) {
+        const {mehtod, originKey, ...othersSetting} = fieldSetting;
+        // console.log(othersSetting, descripor, fieldName);
+        Object.assign(target.fields, BaseModel.fields, {
+          [originKey]: attr({
+            ...othersSetting,
+            [methodType]: value
+          })
+        });
+        Reflect.defineMetadata(
+          lowerFieldName,
+          Reflect.getMetadata(lowerFieldName, target).filter((it: any) => {
+            it.method !== attr;
+          }),
+          target
+        );
+        // console.log(Reflect.getMetadata(lowerFieldName, target));
+      } else {
+        const humpFieldName = translate2HumpSJtring(fieldName);
+        // console.log(target.serverName);
+        //有疑问  如何在没有attr时 获取到原属性名
+        Object.assign(target.fields, BaseModel.fields, {
+          [humpFieldName]: attr({[methodType]: value})
         });
       }
     });
@@ -94,7 +140,10 @@ function Model() {
     const dataKeys = Reflect.getMetadataKeys(target);
     const propertyList = Object.getOwnPropertyNames(target.prototype) || [];
     //对含有 set get 的字段处理 同时会处理该字段attr
+    //实现1 调用
     fieldSetter(dataKeys, propertyList, target);
+    //实现2 调用
+    // fieldSetterField(dataKeys, propertyList, target);
     // console.log(dataKeys);
     //对剩余attr fk pk操作
     dataKeys.map(it => {
