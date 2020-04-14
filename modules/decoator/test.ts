@@ -52,6 +52,18 @@ function fieldSetter(
         Object.getOwnPropertyDescriptor(target.prototype, it) || {};
       const fieldName = it.substring(3); //默认规则 设置的fieldname 的get set 函数同名并在前多get
       const lowerFieldName = format2Lower(fieldName);
+
+      // console.log(Object.getOwnPropertyDescriptor(target.prototype, it));
+
+      // target = new Proxy(target, {
+      //   get: (obj, propKey) => {
+      //     return get ? get.call(target) : obj['_fields'][propKey];
+      //   },
+      //   set: (obj, propKey, value) => {
+      //     set ? set.call(target) : (obj[propKey] = value);
+      //   }
+      // });
+
       const fieldSetting = Reflect.getMetadata(lowerFieldName, target)
         ?.filter((item: any) => {
           return item.method === attr;
@@ -260,6 +272,6 @@ BaseModel.reducer = function(action: AnyAction, modelClass: any, session: any) {
   return session.state;
 };
 
-export {Model, fieldSetAttr, fieldSetPk, fieldSetFk};
+export {Model, fieldSetAttr, fieldSetPk, fieldSetFk, fieldSetter};
 
 //get set 方法如何与属性对应 1 加访问装饰器？ 2 函数名去掉get？

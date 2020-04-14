@@ -1,32 +1,38 @@
 //@ts-ignore
-import {ModuleModel} from 'mcf-module';
-import {Model, fieldSetAttr, fieldSetPk, fieldSetFk} from '../test';
+// import {
+//   Model,
+//   fieldSetAttr as AttrSet,
+//   fieldSetPk as PkSet,
+//   fieldSetFk
+// } from '../test';
+// const {orm, BaseModel} = ModuleModel;
 import {AnyAction} from 'redux';
-const {orm, BaseModel} = ModuleModel;
+import {ProxyModel, FkSet, PkSet, AttrSet, BaseModel} from '../index';
+import {orm} from '../../index';
 
-@Model()
 class TestModel extends BaseModel {
-  @fieldSetPk()
+  static modelName = 'TestModel';
+  @PkSet()
   id!: String;
-  @fieldSetAttr()
+  @AttrSet()
   serverName!: String;
 
-  @fieldSetAttr()
+  @AttrSet()
   serverStatus!: String;
 
-  @fieldSetAttr()
+  @AttrSet()
   serverIp!: String;
-  @fieldSetAttr()
+  @AttrSet()
   serverPort!: String;
 
   serverAddress!: String;
 
-  @fieldSetAttr('serverPort')
+  @AttrSet('serverPort')
   port!: Number;
 
   prop1!: String;
 
-  @fieldSetAttr({fieldName: 'serverStatus'})
+  @AttrSet({fieldName: 'serverStatus'})
   serverStatusStr!: String;
 
   get getserverName() {
@@ -37,38 +43,39 @@ class TestModel extends BaseModel {
   }
   get getServerIp() {
     //@ts-ignore
-    return 'http://' + this._fields.serverIp;
+    return 'http://' + this.serverIp;
   }
   get getServerAddress() {
     //@ts-ignore
-    return [this._fields.serverIp, this._fields.serverPort].join(':');
+    return [this.serverIp, this.serverPort].join(':');
   }
 
   get getServerStatusStr() {
     //@ts-ignore
-    return this._fields.serverStatus === '1' ? '启用' : '禁用';
+    return this.serverStatus === '1' ? '启用' : '禁用';
   }
   getServerStatusIp() {
     //@ts-ignore
-    return this._fields.serverStatus + this._fields.serverIp;
+    return this.serverStatus + this.serverIp;
   }
 }
-@Model()
+
 class TestPropModel extends BaseModel {
+  static modelName = 'TestPropModel';
   id!: String;
   props2!: String;
   Props1!: String;
 }
 
-@Model()
 class ReducerModel extends BaseModel {
+  static modelName = 'ReducerModel';
   id!: String;
   props2!: String;
   Props1!: String;
 }
 
-@Model()
 class ReducerChangeModel extends BaseModel {
+  static modelName = 'ReducerChangeModel';
   static reducers = {
     newItem: (action: AnyAction, modelClass: any) => {
       modelClass.abc(action);
@@ -81,7 +88,20 @@ class ReducerChangeModel extends BaseModel {
   props2!: String;
   Props1!: String;
 }
+//@ts-ignore
+// let TestModel = new ProxyModel(TestModelClass);
+// //@ts-ignore
+// let TestPropModel = new ProxyModel(TestPropModelClass);
+// //@ts-ignore
+// let ReducerModel = new ProxyModel(ReducerModelClass);
+// //@ts-ignore
+// let ReducerChangeModel = new ProxyModel(ReducerChangeModelClass);
 
+export {TestModel};
+
+// console.log(TestModel, TestPropModel, ReducerModel, ReducerChangeModel);
+// console.log(TestModel);
+// orm.register(TestModel, TestPropModel, ReducerModel, ReducerChangeModel);
 orm.register(TestModel, TestPropModel, ReducerModel, ReducerChangeModel);
 let session = orm.session({
   TestModel: {

@@ -11,8 +11,7 @@ const input = './modules/index.ts';
 
 const globals = {
   redux: 'redux',
-  'redux-orm': 'redux-orm',
-  'mcf-module': 'mcf-module'
+  'redux-orm': 'redux-orm'
 };
 
 const commonjsOptions = {

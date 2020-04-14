@@ -1,22 +1,20 @@
 //@ts-ignore
-import {ModuleModel} from 'mcf-module';
-import pk, {fk} from 'redux-orm';
-import {Model, fieldSetAttr, fieldSetPk, fieldSetFk} from '../test';
-import {AnyAction} from 'redux';
-import {session} from './ormInit';
-const {orm, attr, BaseModel} = ModuleModel;
+import {session, TestModel as TestModelClass} from './ormInit';
+import {ProxyModel} from '../Model';
 
 describe('ORM initial', () => {
   const Test = session.TestModel;
-  var testModel = Test.create({
+
+  var TestModel = Test.create({
     id: 'abc',
-    // serverName:"abd",
     serverStatus: '1',
     serverIp: '127.0.0.1',
     serverPort: '8080',
     ip: 'address'
   });
-
+  //@ts-ignore
+  const testModel = new ProxyModel(TestModel, Test, TestModelClass);
+  // console.log(TestModel, Test, testModel);
   it('testModel serverStatusStr', done => {
     expect(testModel.serverStatusStr).toBe('启用');
     done();
@@ -42,10 +40,8 @@ describe('ORM initial', () => {
     done();
   });
   it('testModel serverName set', done => {
-    testModel.serverName = 'abc';
-    let t1 = Test.all().toModelArray()[0];
-    // console.log(t1['serverAddress'])
-    expect(t1.serverAddress).toBe('127.0.0.1:8080');
+    testModel.serverPort = '7099';
+    expect(testModel.serverAddress).toBe('127.0.0.1:7099');
     done();
   });
 });
